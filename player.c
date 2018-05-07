@@ -1,109 +1,199 @@
 /*
  * Bob Somers 2011 
  *   http://bobsomers.com
- *
- * Released under the Beerware License
- *   http://en.wikipedia.org/wiki/Beerware
+ * Modified by: Zachary Matthiesen for the MSP432p401R on Keil for Windows
  *
  * Made for the TI MSP430 LaunchPad
  *   http://ti.com/launchpadwiki
- *
- * NOTE: I wrote this using MSPGCC on Linux. I'm pretty sure I used some
- * defines that are MSPGCC-only (i.e. not defined in the TI Windows software
- * tools). I don't really want to bother with installing it and figuring out
- * what needs to change, so free internet cookies to the first person who
- * submits a patch that makes it work in both.
- *
- * NOTE: As of 2011-10-23, this has been updated for MSPGCC's new "Uniarch",
- * and has been tested with version 4.5.3. If you're using an older version,
- * you may need to replace <msp430.h> with <io.h> and <signal.h>. I'm really
- * not 100% sure, because I don't have an older version around to test with. As
- * above, patches are appreciated.
- * 
- * More info about the Uniarch transition here:
- *   http://sourceforge.net/apps/mediawiki/mspgcc/index.php?title=Devel:Uniarch
  */
 
-#include <msp430.h>
+#include <msp.h>
 
 #include "player.h"
+#include "music.h"
 
-/*
- * ============================ SELECT YOUR SONG ============================
- * Uncomment ONE (1) of the lines below to select which song you would like
- * to load onto your MSP 430. The reason you can only select ONE (1) is due
- * to the limited amount of code space available on the chips that come with
- * the LaunchPad kit. If you have a beefier chip and want to load longer songs,
- * by all means go for it!
- */
+void song_measure_1() {
+    play(E4, 1);
+    play(E4, 1);
+    rest(1);
+    play(E4, 1);
+    rest(1);
+    play(C4, 1);
+    play(E4, 1);
+    rest(1);
+    play(G4, 1);
+    rest(3);
+    play(G3, 1);
+    rest(3);
+}
 
-#include "songs/princess_slide.c"
-/* #include "songs/bobomb_battlefield.c" */
-/* #include "songs/super_mario.c" */
+void song_measure_2() {
+    play(C4, 1);
+    rest(2);
+    play(G3, 1);
+    rest(2);
+    play(E3, 1);
+    rest(2);
+    play(A3, 1);
+    rest(1);
+    play(B3, 1);
+    rest(1);
+    play(As3, 1);
+    play(A3, 1);
+    rest(1);
+}
 
-void init() {
-    /* Stop the watchdog. */
-    WDTCTL = WDTPW | WDTHOLD; 
+void song_measure_3() {
+    play(G3, 1);
+    play(E4, 1);
+    rest(1);
+    play(G4, 1);
+    play(A4, 1);
+    rest(1);
+    play(F4, 1);
+    play(G4, 1);
+    rest(1);
+    play(E4, 1);
+    rest(1);
+    play(C4, 1);
+    play(D4, 1);
+    play(B3, 1);
+    rest(2);
+}
 
-    /* Set the system clock to 1 MHz. */
-    DCOCTL = CALDCO_1MHZ;
-    BCSCTL1 = CALBC1_1MHZ;
+void song_measure_4() {
+    rest(2);
+    play(G4, 1);
+    play(Fs4, 1);
+    play(F4,1);
+    play(Ds4, 1);
+    rest(1);
+    play(E4, 1);
+    rest(1);
+    play(Gs3, 1);
+    play(A3, 1);
+    play(C4, 1);
+    rest(1);
+    play(A3, 1);
+    play(C4, 1);
+    play(D4, 1);
+}
 
-    /* Initialize LEDs (output) and button (input). */
-    LED_DIR |= LED_RED;
-    LED_DIR |= LED_GREEN;
-    BUTTON_DIR &= ~BUTTON;
+void song_measure_5() {
+    rest(2);
+    play(G4, 1);
+    play(Fs4, 1);
+    play(F4,1);
+    play(Ds4, 1);
+    rest(1);
+    play(E4, 1);
+    rest(1);
+    play(C5, 1);
+    rest(1);
+    play(C5, 1);
+    play(C5, 1);
+    rest(3);
+}
 
-    /* Initialize speaker (output). */
-    SPEAKER_DIR |= SPEAKER;
-    
+void song_measure_6() {
+    rest(2);
+    play(Eb4, 1);
+    rest(2);
+    play(D4, 1);
+    rest(2);
+    play(C4, 1);
+    rest(7);
+}
+
+void song_measure_7() {
+    play(C4, 1);
+    play(C4, 1);
+    rest(1);
+    play(C4, 1);
+    rest(1);
+    play(C4, 1);
+    play(D4, 1);
+    rest(1);
+    play(E4, 1);
+    play(C4, 1);
+    rest(1);
+    play(A3, 1);
+    play(G3, 1);
+    rest(3);
+}
+
+void song_measure_8() {
+    play(C4, 1);
+    play(C4, 1);
+    rest(1);
+    play(C4, 1);
+    rest(1);
+    play(C4, 1);
+    play(D4, 1);
+    play(E4,1);
+    rest(7);
+}
+
+void song_play(void) {
+    set_bpm(450);
+    song_measure_1();
+    song_measure_2();
+    song_measure_3();
+    song_measure_2();
+    song_measure_3();
+    song_measure_4();
+    song_measure_5();
+    song_measure_4();
+    song_measure_6();
+    song_measure_4();
+    song_measure_5();
+    song_measure_4();
+    song_measure_6();
+    song_measure_7();
+    song_measure_8();
+    song_measure_7();
+}
+
+void init(void) {
     /* Initialize the timer. */
-    TACTL |= TASSEL_2 | ID_0 | MC_2 | TAIE;
-    TACCTL0 |= CCIE;
-    TACCTL1 |= CCIE;
+   SysTick->LOAD = 8040 - 1;
+   SysTick->CTRL = 7;
 
-    /* Enable interrupts globally. */
-    WRITE_SR(GIE);
+   
+    
+   NVIC_SetPriority(SysTick_IRQn, 2);
+   NVIC_EnableIRQ(SysTick_IRQn);
+    __enable_irq();
 }
 
-void __attribute__((interrupt (TIMERA0_VECTOR))) timer_sound_isr() {
-    /* Push the timer forward by one note cycle. */
-    TACCR0 += current_note;
-
-    /* Output to the speaker if sound is enabled. */
-    if (sound_enabled) {
-        SPEAKER_OUT ^= SPEAKER;
-    }
+void SysTick_Handler(void) {
+   
+   if(sound_enabled == 1) {
+      P1->OUT ^= SPEAKER;
+   }
+   
+   SysTick->LOAD = current_note;
+   ms_elapsed += 1;
 }
 
-void __attribute__((interrupt (TIMERA1_VECTOR))) timer_elapsed_isr() {
-    switch (TAIV) {
-        case 2: /* CCR1 */
-            TACCR1 += 1000; /* 1 ms */
-            ms_elapsed++;
-            break;
-    }
-}
-
-int main() {
+int main(void) {
     /* Initialize the system. */
     init();
 
     while (1) {
-        /* Red LED on. Green LED off. */
-        LED_OUT |= LED_RED;
-        LED_OUT &= ~LED_GREEN;
+       /* Red LED on. Green LED off. */
+       LED_OUT |= LED_RED;
+       LED_OUT &= ~LED_GREEN;
         
-        /* Wait for button press. */
-        while (BUTTON_IN & BUTTON);
+       /* Wait for button press. */
+       while (BUTTON_IN & BUTTON);
         
-        /* Red LED off. Green LED on. */
-        LED_OUT &= ~LED_RED;
-        LED_OUT |= LED_GREEN;
-        
-        /* These functions must be implemented by the selected song. */
-        song_setup();
-        song_play();
+       /* Red LED off. Green LED on. */
+       LED_OUT &= ~LED_RED;
+       LED_OUT |= LED_GREEN;
+
+       song_setup();
+       song_play();
     }
     
     return 0;
