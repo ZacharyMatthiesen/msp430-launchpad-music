@@ -36,3 +36,5 @@ patches are appreciated and receive free internet cookies.***
 Released under the [Beerware License](http://en.wikipedia.org/wiki/Beerware).
 That means you can do whatever the heck you want with it. If you find it useful
 and you run into me someday, you're welcome to buy me a beer if you'd like.
+
+Zachary Matthiesen is looking for free internet cookies.
